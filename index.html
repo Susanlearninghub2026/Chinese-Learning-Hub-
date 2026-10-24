@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chinese Learning Hub</title>
+<style>
+:root{--blue:#2457a7;--pale:#edf4ff;--ink:#243047;--green:#237b55}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,"Noto Sans SC",sans-serif;background:#f6f8fc;color:var(--ink)}
+header{background:linear-gradient(120deg,#204b91,#527fca);color:white;padding:28px 18px;text-align:center}
+header h1{margin:0 0 8px;font-size:clamp(27px,5vw,40px)}
+header p{margin:0}
+nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;background:white;padding:12px;position:sticky;top:0;z-index:5;box-shadow:0 2px 8px #0001}
+button,.navbtn{font:inherit;cursor:pointer;border:0;border-radius:9px;padding:10px 14px}
+.navbtn{background:#edf1f8;color:#243047}
+.navbtn.active,.primary{background:var(--blue);color:white}
+main{max-width:1050px;margin:auto;padding:22px 16px 50px}
+section{display:none}
+section.active{display:block}
+h2{color:#204b91}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.card{background:white;border-radius:14px;padding:18px;box-shadow:0 3px 12px #15284b0b;border:1px solid #e7ebf2}
+.bigemoji{font-size:42px}
+.hanzi{font-size:34px;font-weight:bold;margin:8px 0}
+.pinyin{color:#526d9a;font-size:18px}
+.english{color:#5d6678}
+button{background:#e7efff;color:#204b91;margin:4px 3px 4px 0}
+button:hover{filter:brightness(.96)}
+input,select{font:inherit;padding:10px;border:1px solid #cbd4e2;border-radius:8px;max-width:100%}
+.panel{background:white;border-radius:14px;padding:20px;margin:14px 0;box-shadow:0 3px 12px #15284b0b}
+.feedback{font-weight:bold;min-height:26px;margin:10px 0}
+.correct{color:#237b55}.wrong{color:#b63d3d}
+.wordbank button{background:#f0f4fb;color:#243047}
+footer{text-align:center;padding:24px;color:#647084}
+.gridpaper{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:10px;margin:16px 0}
+.gridcell{height:105px;background:white;border:1px solid #b8c4d7;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative}
+.gridcell:before{content:"";position:absolute;inset:0;background:linear-gradient(to right,transparent 49.5%,#d9dfe9 49.5%,#d9dfe9 50.5%,transparent 50.5%),linear-gradient(to bottom,transparent 49.5%,#d9dfe9 49.5%,#d9dfe9 50.5%,transparent 50.5%);pointer-events:none}
+.small{font-size:14px;color:#68758a}
+@media(max-width:520px){nav{position:static}.navbtn{padding:9px;font-size:14px}.panel{padding:14px}}
+@media print{header,nav,footer,.noprint{display:none!important}body{background:white}main{padding:0}section{display:none!important}section.active{display:block!important}.panel{box-shadow:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>中文学习乐园</h1>
+  <p>Chinese Learning Hub · Learn Chinese step by step!</p>
+</header>
+<nav id="nav">
+  <button class="navbtn active" data-page="home">Home</button>
+  <button class="navbtn" data-page="learn">Learn</button>
+  <button class="navbtn" data-page="practice">Practice</button>
+  <button class="navbtn" data-page="writing">Writing</button>
+  <button class="navbtn" data-page="speaking">Listening & Speaking</button>
+  <button class="navbtn" data-page="teacher">Teacher Resources</button>
+</nav>
+<main>
+<section id="home" class="active">
+  <div class="panel">
+    <h2>Welcome to Chinese Learning Hub!</h2>
+    <p>Learn Chinese characters, pinyin, vocabulary, and useful sentences.</p>
+    <p>学习中文！Learn Chinese!</p>
+    <button class="primary" onclick="showPage('learn')">Start Learning</button>
+    <button onclick="showPage('practice')">Play a Quiz</button>
+  </div>
+  <h2>Choose Your Learning Activity</h2>
+  <div class="cards">
+    <div class="card"><div class="bigemoji">📚</div><h3>Vocabulary</h3><p>Learn words with pictures and pinyin.</p><button onclick="showPage('learn')">Learn Words</button></div>
+    <div class="card"><div class="bigemoji">🎯</div><h3>Practice</h3><p>Answer questions and build sentences.</p><button onclick="showPage('practice')">Practice Now</button></div>
+    <div class="card"><div class="bigemoji">✍️</div><h3>Writing</h3><p>Practice writing Chinese characters.</p><button onclick="showPage('writing')">Write Characters</button></div>
+    <div class="card"><div class="bigemoji">🔊</div><h3>Speaking</h3><p>Listen to Chinese words and sentences.</p><button onclick="showPage('speaking')">Listen & Speak</button></div>
+  </div>
+</section>
+
+<section id="learn">
+  <h2>Learn: School Supplies 学校用品</h2>
+  <p>Look at each card. Read the character, pinyin, and English meaning.</p>
+  <div id="vocabCards" class="cards"></div>
+</section>
+
+<section id="practice">
+  <h2>Practice Zone 互动练习</h2>
+  <div class="panel">
+    <h3>Activity 1: Choose the Correct Word</h3>
+    <p id="quizProgress"></p>
+    <div id="quizQuestion"></div>
+    <div id="quizOptions"></div>
+    <div id="quizFeedback" class="feedback"></div>
+    <button class="primary" id="nextQuiz">Next Question</button>
+    <button id="restartQuiz">Start Again</button>
+  </div>
+  <div class="panel">
+    <h3>Activity 2: Match the Word 配对练习</h3>
+    <p>Choose a Chinese word and match it with its English meaning.</p>
+    <label>Chinese word: <select id="matchChinese"></select></label>
+    <label>English meaning: <select id="matchEnglish"></select></label>
+    <button class="primary" id="checkMatch">Check Match</button>
+    <div id="matchFeedback" class="feedback"></div>
+  </div>
+  <div class="panel">
+    <h3>Activity 3: Build a Sentence 句子排序</h3>
+    <p>Make this sentence: “This is my schoolbag.”</p>
+    <div id="wordBank" class="wordbank"></div>
+    <p>Your sentence: <strong id="builtSentence">Click the words below.</strong></p>
+    <div id="sentenceFeedback" class="feedback"></div>
+    <button class="primary" id="checkSentence">Check Sentence</button>
+    <button id="clearSentence">Try Again</button>
+  </div>
+</section>
+
+<section id="writing">
+  <h2>Writing 汉字书写</h2>
+  <div class="panel">
+    <p>Practice writing these characters on paper. Print this page for a worksheet.</p>
+    <label>Choose a character:
+      <select id="writeChar">
+        <option>笔</option><option>书</option><option>包</option>
+        <option>电</option><option>脑</option><option>我</option>
+        <option>的</option><option>是</option>
+      </select>
+    </label>
+    <button id="showWriting">Show Character</button>
+    <button onclick="window.print()">Print Worksheet</button>
+    <div id="writingGrid" class="gridpaper"></div>
+    <p class="small">Tip: Look at the model, then write the character in each empty grid.</p>
+  </div>
+</section>
+
+<section id="speaking">
+  <h2>Listening & Speaking 听说练习</h2>
+  <div class="panel">
+    <p>Choose a word or sentence and click Listen.</p>
+    <select id="speakText">
+      <option>笔</option><option>书包</option><option>笔记本</option>
+      <option>电脑</option><option>这是我的书包。</option>
+      <option>老师，我需要一支笔。</option>
+    </select>
+    <button class="primary" id="listenBtn">🔊 Listen</button>
+    <p class="small">Audio uses your browser's Chinese speech support. Voice availability varies by device.</p>
+    <h3>Speaking Challenge</h3>
+    <p>Say the sentence aloud: 这是我的书包。</p>
+    <p>Pinyin: Zhè shì wǒ de shūbāo.</p>
+    <p>English: This is my schoolbag.</p>
+  </div>
+</section>
+
+<section id="teacher">
+  <h2>Teacher Resources 教师资源</h2>
+  <div class="panel">
+    <h3>School Supplies Vocabulary</h3>
+    <p>笔 bǐ — pen</p>
+    <p>书 shū — book</p>
+    <p>书包 shūbāo — schoolbag</p>
+    <p>笔记本 bǐjìběn — notebook</p>
+    <p>电脑 diànnǎo — computer</p>
+    <p>柜子 guìzi — cabinet</p>
+    <p>有 yǒu — to have</p>
+    <p>没有 méiyǒu — not have</p>
+    <p>需要 xūyào — to need</p>
+    <h3>Sentence Frames</h3>
+    <p>这是我的……。Zhè shì wǒ de… — This is my…</p>
+    <p>我需要……。Wǒ xūyào… — I need…</p>
+    <p>我有……。Wǒ yǒu… — I have…</p>
+    <h3>Teaching Tip</h3>
+    <p>Have students say the word, read the pinyin, and then use it in a sentence.</p>
+    <p class="small">This is a starter resource. Review vocabulary, translations, and activities before classroom use.</p>
+  </div>
+</section>
+</main>
+<footer>Chinese Learning Hub · 中文学习乐园</footer>
+
+<script>
+const vocab=[
+ {zh:"笔",py:"bǐ",en:"pen",emoji:"✏️"},
+ {zh:"书",py:"shū",en:"book",emoji:"📘"},
+ {zh:"书包",py:"shūbāo",en:"schoolbag",emoji:"🎒"},
+ {zh:"笔记本",py:"bǐjìběn",en:"notebook",emoji:"📓"},
+ {zh:"电脑",py:"diànnǎo",en:"computer",emoji:"💻"},
+ {zh:"柜子",py:"guìzi",en:"cabinet",emoji:"🗄️"},
+ {zh:"有",py:"yǒu",en:"to have",emoji:"✅"},
+ {zh:"没有",py:"méiyǒu",en:"not have",emoji:"❌"},
+ {zh:"需要",py:"xūyào",en:"to need",emoji:"🙋"}
+];
+function showPage(id){
+ document.querySelectorAll("main section").forEach(s=>s.classList.toggle("active",s.id===id));
+ document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".navbtn").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+document.getElementById("vocabCards").innerHTML=vocab.map(v=>`
+ <div class="card"><div class="bigemoji">${v.emoji}</div>
+ <div class="hanzi">${v.zh}</div><div class="pinyin">${v.py}</div>
+ <div class="english">${v.en}</div>
+ <button onclick="speak('${v.zh}')">🔊 Listen</button></div>`).join("");
+
+let quizOrder=[0,1,2,3,4,5,6,7,8],quizPos=0,score=0,answered=false;
+function shuffle(a){return a.sort(()=>Math.random()-.5)}
+function drawQuiz(){
+ const idx=quizOrder[quizPos],v=vocab[idx];
+ answered=false;
+ document.getElementById("quizProgress").textContent=`Question ${quizPos+1} of ${quizOrder.length} · Score: ${score}`;
+ document.getElementById("quizQuestion").innerHTML=`<div class="bigemoji">${v.emoji}</div><p>What is this in Chinese?</p><div class="hanzi">${v.en}</div>`;
+ const opts=shuffle([v,...shuffle(vocab.filter(x=>x.zh!==v.zh)).slice(0,3)]);
+ document.getElementById("quizOptions").innerHTML=opts.map(o=>`<button data-answer="${o.zh}">${o.zh}</button>`).join("");
+ document.getElementById("quizFeedback").textContent="";
+ document.getElementById("quizOptions").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  if(answered)return;answered=true;
+  if(b.dataset.answer===v.zh){score++;document.getElementById("quizFeedback").innerHTML=`<span class="correct">Correct! ${v.zh} (${v.py})</span>`}
+  else{document.getElementById("quizFeedback").innerHTML=`<span class="wrong">Not quite. The answer is ${v.zh} (${v.py}).</span>`}
+  document.getElementById("quizProgress").textContent=`Question ${quizPos+1} of ${quizOrder.length} · Score: ${score}`;
+ });
+}
+document.getElementById("nextQuiz").onclick=()=>{
+ if(quizPos<quizOrder.length-1){quizPos++;drawQuiz()}
+ else{document.getElementById("quizQuestion").innerHTML=`<h3>Quiz complete!</h3><p>Your score: ${score} / ${quizOrder.length}</p>`;document.getElementById("quizOptions").innerHTML="";document.getElementById("quizFeedback").textContent="Click Start Again to practice again."}
+};
+document.getElementById("restartQuiz").onclick=()=>{quizOrder=shuffle([0,1,2,3,4,5,6,7,8]);quizPos=0;score=0;drawQuiz()};
+drawQuiz();
+
+const mc=document.getElementById("matchChinese"),me=document.getElementById("matchEnglish");
+mc.innerHTML=vocab.map(v=>`<option value="${v.zh}">${v.zh} (${v.py})</option>`).join("");
+me.innerHTML=vocab.map(v=>`<option value="${v.en}">${v.en}</option>`).join("");
+document.getElementById("checkMatch").onclick=()=>{
+ const v=vocab.find(x=>x.zh===mc.value);
+ const el=document.getElementById("matchFeedback");
+ el.textContent=v.en===me.value?"Correct match! ✓":`Try again. ${v.zh} means "${v.en}".`;
+ el.className="feedback "+(v.en===me.value?"correct":"wrong");
+};
+
+const sentenceWords=["这是","我的","书包","。"];
+let chosen=[];
+function drawSentence(){
+ document.getElementById("wordBank").innerHTML=sentenceWords.map((w,i)=>chosen.includes(i)?"":`<button data-word="${i}">${w}</button>`).join("");
+ document.getElementById("builtSentence").textContent=chosen.map(i=>sentenceWords[i]).join("")||"Click the words below.";
+ document.querySelectorAll("#wordBank button").forEach(b=>b.onclick=()=>{chosen.push(Number(b.dataset.word));drawSentence()});
+}
+document.getElementById("checkSentence").onclick=()=>{
+ const ok=chosen.length===4&&chosen.map(i=>sentenceWords[i]).join("")==="这是我的书包。";
+ document.getElementById("sentenceFeedback").textContent=ok?"Excellent! Correct sentence.":"Not yet. Try: 这是 + 我的 + 书包 + 。";
+ document.getElementById("sentenceFeedback").className="feedback "+(ok?"correct":"wrong");
+};
+document.getElementById("clearSentence").onclick=()=>{chosen=[];drawSentence();document.getElementById("sentenceFeedback").textContent=""};
+drawSentence();
+
+function drawGrid(){
+ const c=document.getElementById("writeChar").value;
+ document.getElementById("writingGrid").innerHTML=`<div class="gridcell">${c}</div>`+Array.from({length:7},()=>'<div class="gridcell"></div>').join("");
+}
+document.getElementById("showWriting").onclick=drawGrid;
+drawGrid();
+
+function speak(text){
+ if(!("speechSynthesis" in window)){alert("Speech is not supported by this browser.");return}
+ window.speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);u.lang="zh-CN";u.rate=.85;
+ window.speechSynthesis.speak(u);
+}
+document.getElementById("listenBtn").onclick=()=>speak(document.getElementById("speakText").value);
+</script>
+</body>
+</html>
