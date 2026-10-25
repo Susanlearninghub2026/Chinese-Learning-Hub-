@@ -40,6 +40,85 @@ footer{text-align:center;padding:24px;color:#647084}
 .small{font-size:14px;color:#68758a}
 @media(max-width:520px){nav{position:static}.navbtn{padding:9px;font-size:14px}.panel{padding:14px}}
 @media print{header,nav,footer,.noprint{display:none!important}body{background:white}main{padding:0}section{display:none!important}section.active{display:block!important}.panel{box-shadow:none}}
+  
+/* ===== Natural Green Theme ===== */
+:root {
+  --green-dark: #28694F;
+  --green-main: #4F9875;
+  --green-light: #E1EFE5;
+  --green-pale: #F5FAF6;
+  --green-border: #D5E5D9;
+  --text-main: #26382E;
+  --text-muted: #5D7164;
+  --white: #FFFFFF;
+}
+
+/* Overall page */
+body {
+  background-color: var(--green-pale);
+  color: var(--text-main);
+}
+
+/* Header */
+header {
+  background-color: var(--green-dark);
+  color: var(--white);
+}
+
+/* Top navigation */
+#nav {
+  background-color: var(--white);
+  border-color: var(--green-border);
+}
+
+/* Navigation buttons */
+.navbtn {
+  background-color: var(--green-light);
+  color: var(--green-dark);
+  border: 1px solid var(--green-border);
+}
+
+.navbtn:hover,
+.navbtn.active {
+  background-color: var(--green-dark);
+  color: var(--white);
+}
+
+/* Main content cards */
+.card,
+.panel,
+section {
+  border-color: var(--green-border);
+}
+
+/* Buttons */
+button {
+  accent-color: var(--green-main);
+}
+
+button:not(.navbtn) {
+  color: var(--green-dark);
+}
+
+/* Form controls */
+input,
+select,
+textarea {
+  border-color: var(--green-border);
+  background-color: var(--white);
+  color: var(--text-main);
+}
+
+/* Links */
+a {
+  color: var(--green-dark);
+}
+
+/* Muted text */
+small,
+.muted {
+  color: var(--text-muted);
+}
 </style>
 </head>
 <body>
